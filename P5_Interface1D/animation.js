@@ -25,7 +25,7 @@ class Animation {
             
             // populate array with empty/black pixels
             for (let j = 0; j < this.pixels; j++) {
-                this.animation[i][j] = color(0, 0, 0);
+                this.animation[i][j] = color(0, 255, 0);
             }
         
         // Then populate array with animation
