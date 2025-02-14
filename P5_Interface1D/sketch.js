@@ -10,8 +10,8 @@
 let displaySize = 30;   // how many pixels are visible in the game
 let pixelSize = 20;     // how big each 'pixel' looks on screen
 
-let playerOne;    // Adding 2 players to the game
-let playerTwo;
+let alien;    // Adding 2 players to the game
+let cow;
 let target;       // and one target for players to catch.
 
 let display;      // Aggregates our final visual output before showing it on the screen
@@ -30,8 +30,8 @@ function setup() {
 
   display = new Display(displaySize, pixelSize);        //Initializing the display
 
-  playerOne = new Player(color(255,0,0), parseInt(random(0,displaySize)), displaySize);   // Initializing players
-  playerTwo = new Player(color(0,0,255), parseInt(random(0,displaySize)), displaySize);
+  alien = new Player(color(255,0,0), parseInt(random(0,displaySize)), displaySize);   // Initializing players
+  cow = new Player(color(0,0,255), parseInt(random(0,displaySize)), displaySize);
 
   target = new Player(color(255,255,0), parseInt(random(0,displaySize)), displaySize);    // Initializing target using the Player class 
 

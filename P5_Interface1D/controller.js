@@ -25,8 +25,8 @@ class Controller {
                 display.clear();
             
                 // show all players in the right place, by adding them to display buffer
-                display.setPixel(playerOne.position, playerOne.playerColor);
-                display.setPixel(playerTwo.position, playerTwo.playerColor);
+                display.setPixel(alien.position, alien.playerColor);
+                display.setPixel(cow.position, cow.playerColor);
                 
 
                 // now add the target
@@ -34,14 +34,14 @@ class Controller {
 
                 
                 // check if player has caught target
-                if (playerOne.position == target.position)  {
-                    playerOne.score++;              // increment score
+                if (alien.position == target.position)  {
+                    alien.score++;              // increment score
                     this.gameState = "COLLISION";   // go to COLLISION state
                 }
                 
                 // check if other player has caught target        
-                if (playerTwo.position == target.position)  {
-                    playerTwo.score++;              // increment their score
+                if (cow.position == target.position)  {
+                    cow.score++;              // increment their score
                     this.gameState = "COLLISION";   // go to COLLISION state
                 }
 
@@ -66,13 +66,13 @@ class Controller {
                 if (frameToShow == collisionAnimation.animation.length-1)  {
                     
                     // We've hit score max, this player wins
-                    if (playerOne.score >= score.max) {
-                        score.winner = playerOne.playerColor;   // store winning color in score.winner
+                    if (alien.score >= score.max) {
+                        score.winner = alien.playerColor;   // store winning color in score.winner
                         this.gameState = "SCORE";               // go to state that displays score
                     
                     // We've hit score max, this player wins
-                    } else if (playerTwo.score >= score.max) {
-                        score.winner = playerTwo.playerColor;   // store winning color in score.winner
+                    } else if (cow.score >= score.max) {
+                        score.winner = cow.playerColor;   // store winning color in score.winner
                         this.gameState = "SCORE";               // go to state that displays score
 
                     // We haven't hit the max score yet, keep playing    
@@ -88,8 +88,8 @@ class Controller {
             case "SCORE":       
             
                 // reset everyone's score
-                playerOne.score = 0;
-                playerTwo.score = 0;
+                alien.score = 0;
+                cow.score = 0;
 
                 // put the target somewhere else, so we don't restart the game with player and target in the same place
                 target.position = parseInt(random(1,displaySize));
@@ -114,20 +114,20 @@ function keyPressed() {
 
     // Move player one to the left if letter A is pressed
     if (key == 'A' || key == 'a') {
-        playerOne.move(-1);
+        alien.move(-1);
       }
     
     // And so on...
     if (key == 'D' || key == 'd') {
-    playerOne.move(1);
+    alien.move(1);
     }    
 
     if (key == 'J' || key == 'j') {
-    playerTwo.move(-1);
+    cow.move(-1);
     }
     
     if (key == 'L' || key == 'l') {
-    playerTwo.move(1);
+    cow.move(1);
     }
     
     // When you press the letter R, the game resets back to the play state
