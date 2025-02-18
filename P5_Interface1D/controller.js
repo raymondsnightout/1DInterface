@@ -1,57 +1,36 @@
-
 // This is where your state machines and game logic lives
 
-
 class Controller {
-
     // This is the state we start with.
     constructor() {
         this.gameState = "PLAY";
-       
     }
     
     // This is called from draw() in sketch.js with every frame
     update() {
-
         // STATE MACHINE ////////////////////////////////////////////////
         // This is where your game logic lives
         /////////////////////////////////////////////////////////////////
         switch(this.gameState) {
-
             // This is the main game state, where the playing actually happens
             case "PLAY":
-
                 // clear screen at frame rate so we always start fresh      
                 display.clear();
             
-                // show all players in the right place, by adding them to display buffer
-                display.setPixel(alien.position, alien.playerColor);
+                // Display alien (3 pixels)
+                for (let i = 0; i < 3; i++) {
+                    display.setPixel((alien.position + i) % displaySize, alien.playerColor);
+                }
+                
+                // Display cow (1 pixel, on top if overlapping)
                 display.setPixel(cow.position, cow.playerColor);
                 
-
-                // now add the target
-                display.setPixel(target.position, target.playerColor);
-
-                
-                // check if player has caught target
-                if (alien.position == target.position)  {
-                    alien.score++;              // increment score
-                    this.gameState = "COLLISION";   // go to COLLISION state
-                }
-                
-                // check if other player has caught target        
-                if (cow.position == target.position)  {
-                    cow.score++;              // increment their score
-                    this.gameState = "COLLISION";   // go to COLLISION state
-                }
-
                 break;
 
-            // This state is used to play an animation, after a target has been caught by a player 
+            // This state is used to play an animation after a capture attempt
             case "COLLISION":
-                
-                 // clear screen at frame rate so we always start fresh      
-                 display.clear();
+                // clear screen at frame rate so we always start fresh      
+                display.clear();
 
                 // play explosion animation one frame at a time.
                 // first figure out what frame to show
@@ -64,39 +43,28 @@ class Controller {
 
                 //check if animation is done and we should move on to another state
                 if (frameToShow == collisionAnimation.animation.length-1)  {
-                    
-                    // We've hit score max, this player wins
+                    // We've hit score max, alien wins
                     if (alien.score >= score.max) {
                         score.winner = alien.playerColor;   // store winning color in score.winner
-                        this.gameState = "SCORE";               // go to state that displays score
+                        this.gameState = "SCORE";           // go to state that displays score
                     
-                    // We've hit score max, this player wins
+                    // We've hit score max, cow wins
                     } else if (cow.score >= score.max) {
-                        score.winner = cow.playerColor;   // store winning color in score.winner
-                        this.gameState = "SCORE";               // go to state that displays score
+                        score.winner = cow.playerColor;     // store winning color in score.winner
+                        this.gameState = "SCORE";           // go to state that displays score
 
                     // We haven't hit the max score yet, keep playing    
                     } else {
-                        target.position = parseInt(random(0,displaySize));  // move the target to a new random position
-                        this.gameState = "PLAY";    // back to play state
+                        this.resetPositions();              // move players to new random positions
+                        this.gameState = "PLAY";            // back to play state
                     }
                 } 
-
                 break;
 
             // Game is over. Show winner and clean everything up so we can start a new game.
             case "SCORE":       
-            
-                // reset everyone's score
-                alien.score = 0;
-                cow.score = 0;
-
-                // put the target somewhere else, so we don't restart the game with player and target in the same place
-                target.position = parseInt(random(1,displaySize));
-
                 //light up w/ winner color by populating all pixels in buffer with their color
                 display.setAllPixels(score.winner);                    
-
                 break;
 
             // Not used, it's here just for code compliance
@@ -104,34 +72,28 @@ class Controller {
                 break;
         }
     }
+
+    // Check if alien captures cow or misses
+    checkCapture() {
+        if (this.gameState === "PLAY") {
+            if (alien.checkOverlap(cow)) {
+                alien.score++;
+                this.gameState = "COLLISION";
+                collisionAnimation.setColor(alien.playerColor);
+            } else {
+                cow.score++;
+                this.gameState = "COLLISION";
+                collisionAnimation.setColor(cow.playerColor);
+            }
+        }
+    }
+
+    // Reset positions of alien and cow to random locations
+    resetPositions() {
+        alien.position = parseInt(random(0,displaySize-2));
+        cow.position = parseInt(random(0,displaySize));
+        while (alien.checkOverlap(cow)) {
+            cow.position = parseInt(random(0,displaySize));
+        }
+    }
 }
-
-
-
-
-// This function gets called when a key on the keyboard is pressed
-function keyPressed() {
-
-    // Move player one to the left if letter A is pressed
-    if (key == 'A' || key == 'a') {
-        alien.move(-1);
-      }
-    
-    // And so on...
-    if (key == 'D' || key == 'd') {
-    alien.move(1);
-    }    
-
-    if (key == 'J' || key == 'j') {
-    cow.move(-1);
-    }
-    
-    if (key == 'L' || key == 'l') {
-    cow.move(1);
-    }
-    
-    // When you press the letter R, the game resets back to the play state
-    if (key == 'R' || key == 'r') {
-    controller.gameState = "PLAY";
-    }
-  }

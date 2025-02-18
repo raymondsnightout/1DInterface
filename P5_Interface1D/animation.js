@@ -1,10 +1,5 @@
-
-
 class Animation {
-
-
     constructor() {
- 
         this.numberOfFrames = 30;    // how many frames the animation has 
         this.pixels = 30;            // how wide the animation is
         
@@ -19,7 +14,6 @@ class Animation {
 
         // Build up the array in this for loop
         for (let i = 0; i < this.numberOfFrames; i++) {
-            
             // since javascript can't initialize a 2D array, we need to do this
             this.animation[i] = new Array(this.pixels);     
             
@@ -28,26 +22,26 @@ class Animation {
                 this.animation[i][j] = color(0, 0, 0);
             }
         
-        // Then populate array with animation
-        
-        // Start from the center
-        let center = parseInt(this.pixels/2);
-        
-        // Animate to the right
-        this.animation[i][k+center] = color(255, 255, 0);
+            // Then populate array with animation
+            
+            // Start from the center
+            let center = parseInt(this.pixels/2);
+            
+            // Animate to the right
+            this.animation[i][k+center] = color(255, 255, 0);
 
-        // Animate to the left
-        this.animation[i][center-k] = color(255, 255, 0);
-        
-        // Increment animation pixel
-        k = k+1;
-    }
+            // Animate to the left
+            this.animation[i][center-k] = color(255, 255, 0);
+            
+            // Increment animation pixel
+            k = k+1;
+        }
 
+        this.animationColor = color(255, 255, 0);
     }
 
     // This function advances animation to next frame and returns current frame number
     currentFrame() {
-
         this.currentFrameCount = this.currentFrameCount + 1;
 
         if (this.currentFrameCount >= this.numberOfFrames) {
@@ -59,8 +53,17 @@ class Animation {
 
     // Returns one pixel at a time
     grabPixel(_index) {
-
         return this.animation[this.currentFrameCount][_index];
     }
 
+    // Set the color of the animation
+    setColor(_color) {
+        this.animationColor = _color;
+        for (let i = 0; i < this.numberOfFrames; i++) {
+            let k = i;
+            let center = parseInt(this.pixels/2);
+            this.animation[i][k+center] = this.animationColor;
+            this.animation[i][center-k] = this.animationColor;
+        }
+    }
 }
